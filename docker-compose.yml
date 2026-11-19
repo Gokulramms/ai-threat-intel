@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  openkai-engine:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: openkai-engine
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - ENVIRONMENT=production
+      - LOG_LEVEL=INFO
+      - DATABASE_URL=sqlite+aiosqlite:////data/openkai.db
+      - LLM_PROVIDER=gemini
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+      - GEMINI_MODEL=${GEMINI_MODEL:-gemini-1.5-flash}
+      - OLLAMA_BASE_URL=http://ollama:11434
+      - OLLAMA_MODEL=llama3:8b
+      # CrowdStrike Falcon Credentials
+      - CROWDSTRIKE_CLIENT_ID=${CROWDSTRIKE_CLIENT_ID:-}
+      - CROWDSTRIKE_CLIENT_SECRET=${CROWDSTRIKE_CLIENT_SECRET:-}
+      - CROWDSTRIKE_BASE_URL=${CROWDSTRIKE_BASE_URL:-https://api.crowdstrike.com}
+      # Elastic SIEM Credentials
+      - ELASTIC_URL=${ELASTIC_URL:-}
+      - ELASTIC_API_KEY=${ELASTIC_API_KEY:-}
+      - ELASTIC_INDEX=${ELASTIC_INDEX:-logs-*,security-*,audit-*}
+      # Notification Webhooks
+      - SLACK_WEBHOOK_URL=${SLACK_WEBHOOK_URL:-}
+      - TEAMS_WEBHOOK_URL=${TEAMS_WEBHOOK_URL:-}
+      - DISCORD_WEBHOOK_URL=${DISCORD_WEBHOOK_URL:-}
+    volumes:
+      - openkai-data:/data
+    depends_on:
+      - ollama
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: openkai-ollama
+    restart: unless-stopped
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama-models:/root/.ollama
+
+volumes:
+  openkai-data:
+  ollama-models:

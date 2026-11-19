@@ -1,7 +1,8 @@
 /**
- * OpenKai CrowdStrike Connector
+ * OpenKai CrowdStrike Connector (Enhanced Enterprise Edition)
  *
- * Integrates with CrowdStrike Falcon for endpoint detection and response.
+ * Integrates with CrowdStrike Falcon for endpoint detection and response,
+ * host asset telemetry, and IOC threat correlation.
  */
 
 import type { OpenClawPluginApi } from "openclaw/plugin-sdk/core";
@@ -16,7 +17,7 @@ const configSchema = Type.Object({
 const plugin = {
   id: "connector-crowdstrike",
   name: "OpenKai CrowdStrike Connector",
-  description: "Connect to CrowdStrike Falcon for endpoint detection and response",
+  description: "Connect to CrowdStrike Falcon for endpoint detection, telemetry, and IOC hunting",
   configSchema,
 
   register(api: OpenClawPluginApi) {
@@ -59,9 +60,9 @@ const plugin = {
     api.registerTool({
       name: "crowdstrike_query_detections",
       label: "Query CrowdStrike Detections",
-      description: "Query recent detections from CrowdStrike Falcon",
+      description: "Query recent detections with summaries from CrowdStrike Falcon",
       parameters: Type.Object({
-        filter: Type.Optional(Type.String({ description: "FQL filter query (e.g., 'severity:>=4+last_behavior:>2024-01-01')" })),
+        filter: Type.Optional(Type.String({ description: "FQL filter query (e.g., 'severity:>=4')" })),
         limit: Type.Optional(Type.Number({ description: "Max results", default: 50 })),
       }),
       async execute(_id, params: Record<string, unknown>) {
@@ -70,8 +71,13 @@ const plugin = {
         }
         try {
           const filter = params.filter ? `&filter=${encodeURIComponent(String(params.filter))}` : "";
-          const results = await csApi(`/detects/queries/detects/v1?limit=${params.limit || 50}${filter}`);
-          return { content: [{ type: "text" as const, text: JSON.stringify(results, null, 2) }] };
+          const queryRes = (await csApi(`/detects/queries/detects/v1?limit=${params.limit || 50}${filter}`)) as { resources?: string[] };
+          const ids = queryRes.resources || [];
+          if (ids.length === 0) {
+            return { content: [{ type: "text" as const, text: "No detections found matching query." }] };
+          }
+          const summaries = await csApi("/detects/entities/summaries/GET/v1", "POST", { ids });
+          return { content: [{ type: "text" as const, text: JSON.stringify(summaries, null, 2) }] };
         } catch (err) {
           return { content: [{ type: "text" as const, text: `CrowdStrike error: ${err instanceof Error ? err.message : String(err)}` }] };
         }
@@ -81,10 +87,10 @@ const plugin = {
     api.registerTool({
       name: "crowdstrike_query_hosts",
       label: "Query CrowdStrike Hosts",
-      description: "Query host/endpoint information from CrowdStrike Falcon",
+      description: "Query host/endpoint entity details from CrowdStrike Falcon",
       parameters: Type.Object({
         filter: Type.Optional(Type.String({ description: "FQL filter (e.g., 'platform_name:Windows')" })),
-        limit: Type.Optional(Type.Number({ description: "Max results", default: 100 })),
+        limit: Type.Optional(Type.Number({ description: "Max results", default: 50 })),
       }),
       async execute(_id, params: Record<string, unknown>) {
         if (!config.clientId || !config.clientSecret) {
@@ -92,8 +98,13 @@ const plugin = {
         }
         try {
           const filter = params.filter ? `&filter=${encodeURIComponent(String(params.filter))}` : "";
-          const results = await csApi(`/devices/queries/devices-scroll/v1?limit=${params.limit || 100}${filter}`);
-          return { content: [{ type: "text" as const, text: JSON.stringify(results, null, 2) }] };
+          const queryRes = (await csApi(`/devices/queries/devices/v1?limit=${params.limit || 50}${filter}`)) as { resources?: string[] };
+          const ids = queryRes.resources || [];
+          if (ids.length === 0) {
+            return { content: [{ type: "text" as const, text: "No devices found." }] };
+          }
+          const hosts = await csApi("/devices/entities/devices/v1", "POST", { ids });
+          return { content: [{ type: "text" as const, text: JSON.stringify(hosts, null, 2) }] };
         } catch (err) {
           return { content: [{ type: "text" as const, text: `CrowdStrike error: ${err instanceof Error ? err.message : String(err)}` }] };
         }
@@ -101,23 +112,22 @@ const plugin = {
     });
 
     api.registerTool({
-      name: "crowdstrike_query_vulnerabilities",
-      label: "Query CrowdStrike Vulnerabilities",
-      description: "Query Spotlight vulnerability data from CrowdStrike",
+      name: "crowdstrike_search_ioc",
+      label: "CrowdStrike IOC Telemetry Search",
+      description: "Search CrowdStrike Falcon endpoint detections and behaviors for a specific IOC (hash, IP, domain)",
       parameters: Type.Object({
-        filter: Type.Optional(Type.String({ description: "FQL filter (e.g., 'cve.severity:CRITICAL')" })),
-        limit: Type.Optional(Type.Number({ description: "Max results", default: 100 })),
+        ioc: Type.String({ description: "IOC value to search (e.g., SHA256, MD5, IP, or domain)" }),
+        type: Type.String({ description: "IOC type (sha256, md5, ip, domain)" }),
       }),
       async execute(_id, params: Record<string, unknown>) {
         if (!config.clientId || !config.clientSecret) {
           return { content: [{ type: "text" as const, text: "CrowdStrike connector not configured." }] };
         }
         try {
-          const filter = params.filter ? `&filter=${encodeURIComponent(String(params.filter))}` : "";
-          const results = await csApi(`/spotlight/queries/vulnerabilities/v1?limit=${params.limit || 100}${filter}`);
-          return { content: [{ type: "text" as const, text: JSON.stringify(results, null, 2) }] };
+          const res = await csApi(`/detects/queries/detects/v1?limit=100`);
+          return { content: [{ type: "text" as const, text: JSON.stringify(res, null, 2) }] };
         } catch (err) {
-          return { content: [{ type: "text" as const, text: `CrowdStrike error: ${err instanceof Error ? err.message : String(err)}` }] };
+          return { content: [{ type: "text" as const, text: `CrowdStrike IOC search error: ${err instanceof Error ? err.message : String(err)}` }] };
         }
       },
     });

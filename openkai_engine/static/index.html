@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OpenKai SOC | Enterprise AI Security Intelligence & Investigation Platform</title>
+  <link rel="stylesheet" href="/static/styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="brand-section">
+        <div class="brand-icon-wrapper">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <path d="M12 8v4"/>
+            <path d="M12 16h.01"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <h1>OpenKai SOC</h1>
+          <span class="brand-badge">Enterprise Edition</span>
+        </div>
+      </div>
+
+      <ul class="nav-menu">
+        <li class="nav-header">Operations & Analytics</li>
+        <li class="nav-btn active" data-tab="overview">
+          <span class="icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+          </span>
+          Executive Overview
+        </li>
+        <li class="nav-btn" data-tab="investigate">
+          <span class="icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          </span>
+          AI Threat Investigation
+        </li>
+
+        <li class="nav-header">Threat Intelligence & Exposure</li>
+        <li class="nav-btn" data-tab="threat-sources">
+          <span class="icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          </span>
+          Threat Sources (14)
+          <span class="nav-counter" id="nav-sources-count">14</span>
+        </li>
+        <li class="nav-btn" data-tab="indicators">
+          <span class="icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+          </span>
+          IOC Indicators
+          <span class="nav-counter highlight" id="nav-iocs-count">--</span>
+        </li>
+        <li class="nav-btn" data-tab="vulnerabilities">
+          <span class="icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          </span>
+          CVE & KEV Intel
+          <span class="nav-counter" id="nav-cves-count">--</span>
+        </li>
+        <li class="nav-btn" data-tab="assets">
+          <span class="icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          </span>
+          Enterprise Assets
+          <span class="nav-counter" id="nav-assets-count">--</span>
+        </li>
+
+        <li class="nav-header">Security Telemetry Stack</li>
+        <li class="nav-btn" data-tab="crowdstrike">
+          <span class="icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 19 21 12 17 5 21 12 2"/></svg>
+          </span>
+          CrowdStrike Falcon
+        </li>
+        <li class="nav-btn" data-tab="elastic">
+          <span class="icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          </span>
+          Elastic SIEM
+        </li>
+        <li class="nav-btn" data-tab="connectors">
+          <span class="icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </span>
+          Connectors Health
+        </li>
+        <li class="nav-btn" data-tab="audit">
+          <span class="icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          </span>
+          Audit & Compliance
+        </li>
+      </ul>
+
+      <div class="sidebar-bottom">
+        <div class="engine-pill">
+          <div class="engine-status">
+            <span class="pulse-dot"></span>
+            <strong>Engine Online</strong>
+          </div>
+          <span class="text-muted mono">v1.0.0</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Viewport -->
+    <div class="main-viewport">
+      <!-- Topbar -->
+      <header class="topbar">
+        <div class="topbar-search-container">
+          <div class="search-box-wrapper">
+            <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <input type="text" id="topbar-search" placeholder="Investigate Threat (e.g. CVE-2024-38077, 162.243.103.246, LockBit, SHA256)..." />
+            <span class="hotkey-hint">Enter</span>
+            <button class="btn btn-primary search-enter-btn" id="topbar-search-btn">
+              <span>Investigate</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="topbar-right">
+          <div class="ai-pill" id="ai-status-indicator">
+            <span class="ai-sparkle">✨</span>
+            <span class="ai-text">AI Agent:</span>
+            <strong id="topbar-ai-name">Google Gemini (gemini-2.5-flash)</strong>
+            <span class="ai-live-dot"></span>
+          </div>
+
+          <button class="btn btn-secondary btn-sm" id="btn-sync-all" title="Synchronize all threat intelligence sources">
+            <svg id="sync-spinner-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+            <span id="sync-btn-text">Sync Feeds</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- View Container -->
+      <main class="view-container">
+
+        <!-- 1. Executive Overview -->
+        <section id="pane-overview" class="view-pane active">
+          <div class="view-header">
+            <div>
+              <h2>Executive Security Intelligence Overview</h2>
+              <p>Continuous threat intelligence evaluation, exposure analysis, and telemetry correlation</p>
+            </div>
+            <div class="header-actions">
+              <span class="text-muted mono update-tag">Telemetry: <span class="text-emerald font-semibold">Live Real-Time</span></span>
+            </div>
+          </div>
+
+          <!-- KPI Cards Grid -->
+          <div class="kpi-grid">
+            <div class="kpi-card accent-blue">
+              <div class="kpi-header">
+                <span class="label">Ingested Threat Intelligence</span>
+                <span class="kpi-icon-badge">🌐</span>
+              </div>
+              <span class="number" id="kpi-total-threats">--</span>
+              <div class="kpi-footer">
+                <span class="status-pill status-active">14 Sources Integrated</span>
+                <span class="subtitle">CVEs, IOCs & TTPs</span>
+              </div>
+            </div>
+
+            <div class="kpi-card accent-red">
+              <div class="kpi-header">
+                <span class="label">Known Exploited Vulnerabilities</span>
+                <span class="kpi-icon-badge">🚨</span>
+              </div>
+              <span class="number text-critical" id="kpi-total-kev">--</span>
+              <div class="kpi-footer">
+                <span class="status-pill status-critical">CISA KEV Catalog</span>
+                <span class="subtitle">Actively exploited in wild</span>
+              </div>
+            </div>
+
+            <div class="kpi-card accent-cyan">
+              <div class="kpi-header">
+                <span class="label">Active Malicious Indicators</span>
+                <span class="kpi-icon-badge">🎯</span>
+              </div>
+              <span class="number text-cyan" id="kpi-total-iocs">--</span>
+              <div class="kpi-footer">
+                <span class="status-pill status-cyan">Feodo & Emerging Threats</span>
+                <span class="subtitle">Botnets, IPs, URLs & Hashes</span>
+              </div>
+            </div>
+
+            <div class="kpi-card accent-emerald">
+              <div class="kpi-header">
+                <span class="label">Enterprise Endpoints Monitored</span>
+                <span class="kpi-icon-badge">💻</span>
+              </div>
+              <span class="number text-emerald" id="kpi-total-devices">--</span>
+              <div class="kpi-footer">
+                <span class="status-pill status-emerald">Fleet Monitored</span>
+                <span class="subtitle">Workstations & Cloud Servers</span>
+              </div>
+            </div>
+
+            <div class="kpi-card accent-purple">
+              <div class="kpi-header">
+                <span class="label">EDR & SIEM Connectors</span>
+                <span class="kpi-icon-badge">🔌</span>
+              </div>
+              <span class="number-text text-purple" id="kpi-integrations-status">Standby</span>
+              <div class="kpi-footer">
+                <span class="status-pill status-purple">Clean Standby</span>
+                <span class="subtitle">Ready for .env credentials</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Threat Surface & Exposure Telemetry Bar -->
+          <div class="surface-telemetry-panel">
+            <div class="surface-header">
+              <div>
+                <h4 style="font-size:15px; font-weight:700; margin-bottom: 4px;">Threat Vector Distribution & Exposure Radar</h4>
+                <p class="text-muted" style="font-size: 13px;">Real-time balance of ingested attack vectors across corporate boundary</p>
+              </div>
+              <div class="surface-legend">
+                <span class="legend-item"><span class="legend-dot" style="background:#f43f5e;"></span> CISA KEV Exploited</span>
+                <span class="legend-item"><span class="legend-dot" style="background:#38bdf8;"></span> NIST NVD Vulnerabilities</span>
+                <span class="legend-item"><span class="legend-dot" style="background:#10b981;"></span> Botnet & Compromised IPs</span>
+                <span class="legend-item"><span class="legend-dot" style="background:#a855f7;"></span> Malware Hashes (SHA256)</span>
+                <span class="legend-item"><span class="legend-dot" style="background:#f59e0b;"></span> MITRE ATT&CK TTPs</span>
+              </div>
+            </div>
+            <div class="threat-progress-bar">
+              <div class="threat-segment" style="width: 45%; background: #f43f5e;" title="CISA KEV Catalog"></div>
+              <div class="threat-segment" style="width: 20%; background: #38bdf8;" title="NVD CVEs"></div>
+              <div class="threat-segment" style="width: 15%; background: #10b981;" title="Botnet C2 & Compromised IPs"></div>
+              <div class="threat-segment" style="width: 8%; background: #a855f7;" title="Malware Samples & Hashes"></div>
+              <div class="threat-segment" style="width: 12%; background: #f59e0b;" title="MITRE ATT&CK Matrix"></div>
+            </div>
+          </div>
+
+          <!-- Recent Investigations Table -->
+          <div class="panel">
+            <div class="panel-header">
+              <div class="panel-title-group">
+                <h3>Recent SOC Investigations & Correlated Threats</h3>
+                <span class="badge badge-subtle">Audit Trail</span>
+              </div>
+              <button class="btn btn-sm btn-secondary" onclick="loadRecentInvestigations()">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+                Refresh
+              </button>
+            </div>
+            <div class="table-responsive">
+              <table class="soc-table" id="recent-inv-table">
+                <thead>
+                  <tr>
+                    <th>Investigation ID</th>
+                    <th>Target Indicator / CVE</th>
+                    <th>Category</th>
+                    <th>Verdict</th>
+                    <th>Risk Score</th>
+                    <th>Recorded At</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td colspan="7" class="text-muted" style="text-align:center; padding: 24px;">No investigations recorded yet. Use the investigation bar above to run a search.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- 2. Threat Investigation Console -->
+        <section id="pane-investigate" class="view-pane">
+          <div class="view-header">
+            <div>
+              <h2>AI-Powered SOC Threat Investigation Console</h2>
+              <p>Correlates IOCs and CVEs across threat databases, asset inventory, CrowdStrike EDR, and Elastic SIEM with Google Gemini AI</p>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-body">
+              <div class="investigation-input-bar">
+                <input type="text" id="inv-console-input" class="inv-main-input" placeholder="Enter indicator (e.g. CVE-2024-38077, 162.243.103.246, c8303f569b9148d2eb9d9b626d7f0fa929d2f6ff94553258ff8a02c3c6f60020)..." />
+                <button class="btn btn-primary btn-lg" id="btn-run-investigation">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                  <span>Execute Investigation</span>
+                </button>
+              </div>
+
+              <div class="quick-prompts-bar">
+                <span class="prompt-label">Quick Scenarios:</span>
+                <button class="btn-pill" onclick="quickInvestigate('CVE-2024-38077')">🚨 CVE-2024-38077 (RCE / KEV)</button>
+                <button class="btn-pill" onclick="quickInvestigate('162.243.103.246')">🎯 IP: 162.243.103.246 (Emotet C2)</button>
+                <button class="btn-pill" onclick="quickInvestigate('101.32.116.104')">⚠️ IP: 101.32.116.104 (Emerging Threats)</button>
+                <button class="btn-pill" onclick="quickInvestigate('c8303f569b9148d2eb9d9b626d7f0fa929d2f6ff94553258ff8a02c3c6f60020')">🦠 LockBit 3.0 Ransomware Hash</button>
+                <button class="btn-pill" onclick="quickInvestigate('CVE-2024-21413')">🛡️ CVE-2024-21413 (MonikerLink)</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Multi-Stage Reasoning Pipeline Indicator (Hidden by default, shown during investigation) -->
+          <div id="investigation-pipeline" class="investigation-pipeline hidden">
+            <div class="pipeline-step active" id="pipe-step-1">
+              <span class="step-num">1</span>
+              <span class="step-text">Ingesting Target</span>
+            </div>
+            <div class="pipeline-connector"></div>
+            <div class="pipeline-step" id="pipe-step-2">
+              <span class="step-num">2</span>
+              <span class="step-text">Threat Intel DB (14 Feeds)</span>
+            </div>
+            <div class="pipeline-connector"></div>
+            <div class="pipeline-step" id="pipe-step-3">
+              <span class="step-num">3</span>
+              <span class="step-text">Asset Surface Scan</span>
+            </div>
+            <div class="pipeline-connector"></div>
+            <div class="pipeline-step" id="pipe-step-4">
+              <span class="step-num">4</span>
+              <span class="step-text">EDR & SIEM Telemetry</span>
+            </div>
+            <div class="pipeline-connector"></div>
+            <div class="pipeline-step" id="pipe-step-5">
+              <span class="step-num">5</span>
+              <span class="step-text">Gemini Multi-Agent AI</span>
+            </div>
+          </div>
+
+          <!-- Live Result Card -->
+          <div id="inv-result-card" class="investigation-card hidden">
+            <div class="inv-top-bar">
+              <div>
+                <div style="display:flex; align-items:center; gap: 10px; margin-bottom: 6px;">
+                  <span id="inv-verdict-badge" class="verdict-tag potential">POTENTIAL MATCH</span>
+                  <span class="text-muted mono" id="inv-runtime-tag" style="font-size:12px;">Real Telemetry Evaluated</span>
+                </div>
+                <h3 id="inv-result-title" style="font-size: 22px; font-weight: 800; letter-spacing: -0.02em;">Investigation</h3>
+                <p id="inv-result-target" class="mono text-muted" style="font-size: 13px; margin-top: 4px;"></p>
+              </div>
+              <div class="inv-score-block">
+                <div class="risk-gauge-container">
+                  <div class="risk-score-value" id="inv-result-risk">--</div>
+                  <div class="risk-score-label" id="inv-result-severity">RISK SCORE</div>
+                </div>
+                <div class="export-actions">
+                  <button class="btn btn-sm btn-secondary export-btn" onclick="exportReportCurrent('pdf')">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    PDF
+                  </button>
+                  <button class="btn btn-sm btn-secondary export-btn" onclick="exportReportCurrent('xlsx')">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+                    Excel
+                  </button>
+                  <button class="btn btn-sm btn-secondary export-btn" onclick="exportReportCurrent('csv')">CSV</button>
+                  <button class="btn btn-sm btn-secondary export-btn" onclick="exportReportCurrent('json')">{ } JSON</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Stats Ribbon -->
+            <div class="inv-stats-ribbon">
+              <div class="ribbon-cell">
+                <div class="val text-blue" id="inv-cs-matches">0</div>
+                <div class="desc">CrowdStrike Matches</div>
+                <span class="subdesc">EDR Detections</span>
+              </div>
+              <div class="ribbon-cell">
+                <div class="val text-amber" id="inv-siem-matches">0</div>
+                <div class="desc">Elastic SIEM Matches</div>
+                <span class="subdesc">Historical Log Hits</span>
+              </div>
+              <div class="ribbon-cell">
+                <div class="val text-critical" id="inv-dev-matches">0</div>
+                <div class="desc">Affected Enterprise Devices</div>
+                <span class="subdesc">Internal Fleet Exposure</span>
+              </div>
+              <div class="ribbon-cell">
+                <div class="val text-emerald" id="inv-ev-matches">0</div>
+                <div class="desc">Correlated Evidence Items</div>
+                <span class="subdesc">Cross-Platform Proof</span>
+              </div>
+            </div>
+
+            <!-- Gemini AI Multi-Perspective Analysis -->
+            <div class="ai-synthesis-container">
+              <div class="ai-synthesis-block">
+                <div class="ai-block-title">
+                  <span class="ai-sparkle">✨</span>
+                  <span>Threat Intelligence & MITRE ATT&CK Agent (Google Gemini AI)</span>
+                </div>
+                <div class="ai-prose" id="inv-ai-ti">Analyzing threat context...</div>
+              </div>
+
+              <div class="ai-synthesis-block border-cyan">
+                <div class="ai-block-title text-cyan">
+                  <span>🏢 Enterprise Asset Impact & Blast Radius</span>
+                </div>
+                <div class="ai-prose" id="inv-ai-asset">Analyzing organizational exposure...</div>
+              </div>
+
+              <div class="ai-synthesis-block border-emerald">
+                <div class="ai-block-title text-emerald">
+                  <span>🛡️ SOC Executive Conclusion & Immediate Remediation Playbook</span>
+                </div>
+                <div class="ai-prose" id="inv-ai-summary">Generating executive conclusion...</div>
+                <ul id="inv-ai-actions" class="remediation-list"></ul>
+              </div>
+            </div>
+
+            <!-- Evidence Table -->
+            <div class="panel" style="margin-top: 24px;">
+              <div class="panel-header">
+                <h3>Correlated Evidence Ledger</h3>
+                <span class="badge badge-subtle">Grounded Telemetry</span>
+              </div>
+              <div class="table-responsive">
+                <table class="soc-table" id="inv-evidence-table">
+                  <thead>
+                    <tr>
+                      <th>Telemetry Source</th>
+                      <th>Evidence Type</th>
+                      <th>Observed Description</th>
+                      <th>Confidence Score</th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 3. Threat Sources Matrix (14 Sources) -->
+        <section id="pane-threat-sources" class="view-pane">
+          <div class="view-header">
+            <div>
+              <h2>Integrated Threat Intelligence Sources (14 Feeds)</h2>
+              <p>Official machine-readable feeds, JSON APIs, and STIX/TAXII standards continuously ingested into OpenKai</p>
+            </div>
+            <div class="header-actions">
+              <button class="btn btn-primary" onclick="syncAllFeeds()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+                Sync All Sources Now
+              </button>
+            </div>
+          </div>
+
+          <!-- Feed Category Filters & Search -->
+          <div class="threat-sources-toolbar">
+            <div class="filter-pills-group" id="sources-filter-pills">
+              <button class="filter-pill active" data-filter="all">All Sources (14)</button>
+              <button class="filter-pill" data-filter="vulnerabilities">Vulnerabilities & KEV (2)</button>
+              <button class="filter-pill" data-filter="mitre">Adversary TTPs (1)</button>
+              <button class="filter-pill" data-filter="malware">Malware & C2 Botnets (3)</button>
+              <button class="filter-pill" data-filter="gov">Government & CERTs (5)</button>
+              <button class="filter-pill" data-filter="reputation">IP & Reputation (3)</button>
+            </div>
+            <div class="search-box-wrapper toolbar-search">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+              <input type="text" id="sources-search-input" placeholder="Filter sources..." />
+            </div>
+          </div>
+
+          <!-- Source Cards Grid -->
+          <div class="threat-sources-grid" id="sources-cards-container">
+            <!-- Rendered by JS -->
+          </div>
+        </section>
+
+        <!-- 4. IOC Indicators -->
+        <section id="pane-indicators" class="view-pane">
+          <div class="view-header">
+            <div>
+              <h2>Extracted Threat Indicators (IOCs)</h2>
+              <p>Normalized malicious IPs, Domains, URLs, SHA256, and MD5 hashes across ingested threat feeds</p>
+            </div>
+          </div>
+
+          <div class="indicators-toolbar">
+            <div class="filter-pills-group" id="iocs-type-filters">
+              <button class="filter-pill active" data-type="">All Types</button>
+              <button class="filter-pill" data-type="ip">IP Addresses</button>
+              <button class="filter-pill" data-type="sha256">SHA256 Hashes</button>
+              <button class="filter-pill" data-type="md5">MD5 Hashes</button>
+              <button class="filter-pill" data-type="url">URLs</button>
+            </div>
+            <div class="search-box-wrapper toolbar-search">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+              <input type="text" id="iocs-search-input" placeholder="Search indicator, malware name..." />
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="table-responsive">
+              <table class="soc-table" id="indicators-table">
+                <thead>
+                  <tr>
+                    <th>Indicator Value</th>
+                    <th>Type</th>
+                    <th>Intelligence Source</th>
+                    <th>Confidence</th>
+                    <th>Severity</th>
+                    <th>Malware Family / Threat</th>
+                    <th>Last Synchronized</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td colspan="8" class="text-muted" style="text-align:center; padding: 24px;">Loading indicators...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- 5. Vulnerabilities (CVE & KEV) -->
+        <section id="pane-vulnerabilities" class="view-pane">
+          <div class="view-header">
+            <div>
+              <h2>Vulnerability Intelligence (CVE & CISA KEV)</h2>
+              <p>NIST NVD 2.0 and CISA Known Exploited Vulnerabilities Database</p>
+            </div>
+          </div>
+
+          <div class="indicators-toolbar">
+            <div class="filter-pills-group" id="cve-filter-pills">
+              <button class="filter-pill active" data-kev="">All Disclosed CVEs</button>
+              <button class="filter-pill" data-kev="true">🚨 CISA KEV Exploited Only</button>
+              <button class="filter-pill" data-sev="CRITICAL">Critical Severity (9.0+)</button>
+            </div>
+            <div class="search-box-wrapper toolbar-search">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+              <input type="text" id="cve-search-input" placeholder="Search CVE ID, vendor, product..." />
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="table-responsive">
+              <table class="soc-table" id="cves-table">
+                <thead>
+                  <tr>
+                    <th>CVE Identifier</th>
+                    <th>CVSS v3</th>
+                    <th>Severity</th>
+                    <th>Target Vendor & Product</th>
+                    <th>Exploitation Status</th>
+                    <th>Vulnerability Details</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td colspan="7" class="text-muted" style="text-align:center; padding: 24px;">Loading CVE intelligence...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- 6. Enterprise Assets -->
+        <section id="pane-assets" class="view-pane">
+          <div class="view-header">
+            <div>
+              <h2>Enterprise Asset & Device Inventory</h2>
+              <p>Enterprise workstations, cloud instances, and critical servers mapped for exposure analysis</p>
+            </div>
+            <div class="header-actions">
+              <button class="btn btn-secondary btn-sm" onclick="showAddAssetModal()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Add Device
+              </button>
+              <button class="btn btn-primary btn-sm" onclick="showAssetImportModal()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                Import Fleet CSV
+              </button>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header">
+              <div class="panel-title-group">
+                <h3>Monitored Enterprise Infrastructure</h3>
+                <span class="badge badge-subtle" id="asset-count-badge">6 Registered Endpoints</span>
+              </div>
+            </div>
+            <div class="table-responsive">
+              <table class="soc-table" id="devices-table">
+                <thead>
+                  <tr>
+                    <th>Device ID</th>
+                    <th>Hostname</th>
+                    <th>Internal IP</th>
+                    <th>Operating System</th>
+                    <th>Department / Owner</th>
+                    <th>Criticality</th>
+                    <th>Exposure Zone</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td colspan="8" class="text-muted" style="text-align:center; padding: 24px;">Loading enterprise devices...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- 7. CrowdStrike Falcon -->
+        <section id="pane-crowdstrike" class="view-pane">
+          <div class="view-header">
+            <div>
+              <h2>CrowdStrike Falcon EDR Integration</h2>
+              <p>Real-time sensor telemetry, host containment, and behavioral detections</p>
+            </div>
+          </div>
+
+          <div class="standby-banner">
+            <div class="standby-icon">🦅</div>
+            <div>
+              <h4>CrowdStrike Falcon Sensor Bus — Standby Mode</h4>
+              <p>Connect your CrowdStrike OAuth2 Client ID & Secret in <code>.env</code> to activate live device inventory queries, detection alerts, and host quarantine.</p>
+              <div class="standby-tags">
+                <span class="badge badge-free">OAuth2 Spec Ready</span>
+                <span class="badge badge-subtle">Zero Mock Telemetry</span>
+                <span class="badge badge-key">Endpoints: /devices/entities/hosts/v1, /detects/queries/detects/v1</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header">
+              <h3>Connector Diagnostic & Live Test</h3>
+              <button class="btn btn-sm btn-secondary" onclick="testCrowdStrike()">Test Falcon OAuth2</button>
+            </div>
+            <div class="panel-body" id="cs-status-view">
+              <div class="config-instructions">
+                <p><strong>To activate live CrowdStrike telemetry:</strong></p>
+                <ol>
+                  <li>Open <code>.env</code> in your project directory.</li>
+                  <li>Set <code>CROWDSTRIKE_CLIENT_ID=your_falcon_client_id</code></li>
+                  <li>Set <code>CROWDSTRIKE_CLIENT_SECRET=your_falcon_client_secret</code></li>
+                  <li>Set <code>CROWDSTRIKE_BASE_URL=https://api.crowdstrike.com</code> (or your Falcon cloud region)</li>
+                  <li>Click <strong>Test Falcon OAuth2</strong> above to verify your live connection.</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 8. Elastic SIEM -->
+        <section id="pane-elastic" class="view-pane">
+          <div class="view-header">
+            <div>
+              <h2>Elastic SIEM & Historical Event Pipeline</h2>
+              <p>Elastic Common Schema (ECS) search across authentication, network, and firewall telemetry</p>
+            </div>
+          </div>
+
+          <div class="standby-banner">
+            <div class="standby-icon">⚡</div>
+            <div>
+              <h4>Elasticsearch SIEM Engine — Standby Mode</h4>
+              <p>Connect your Elasticsearch cluster URL and API key in <code>.env</code> to query historical security events, audit records, and correlated Kibana detections.</p>
+              <div class="standby-tags">
+                <span class="badge badge-free">Elastic Common Schema (ECS)</span>
+                <span class="badge badge-subtle">Zero Mock Telemetry</span>
+                <span class="badge badge-key">Index Pattern: logs-*, security-*, audit-*</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header">
+              <h3>Cluster Health & Diagnostic</h3>
+              <button class="btn btn-sm btn-secondary" onclick="testElastic()">Test Elastic SIEM</button>
+            </div>
+            <div class="panel-body" id="elastic-status-view">
+              <div class="config-instructions">
+                <p><strong>To activate live Elastic SIEM queries:</strong></p>
+                <ol>
+                  <li>Open <code>.env</code> in your project directory.</li>
+                  <li>Set <code>ELASTIC_URL=https://your-elastic-cluster:9200</code></li>
+                  <li>Set <code>ELASTIC_API_KEY=your_base64_api_key</code> (or <code>ELASTIC_USERNAME</code> / <code>ELASTIC_PASSWORD</code>)</li>
+                  <li>Click <strong>Test Elastic SIEM</strong> above to verify your cluster status.</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 9. Connectors Health -->
+        <section id="pane-connectors" class="view-pane">
+          <div class="view-header">
+            <div>
+              <h2>Connectors Diagnostic & Status Matrix</h2>
+              <p>Real-time operational status across all 14 threat feeds, Gemini AI, and security adapters</p>
+            </div>
+          </div>
+
+          <div id="connectors-diagnostic-content">
+            <p class="text-muted">Loading connectors status...</p>
+          </div>
+        </section>
+
+        <!-- 10. Audit & Compliance -->
+        <section id="pane-audit" class="view-pane">
+          <div class="view-header">
+            <div>
+              <h2>Audit & Investigation Logs</h2>
+              <p>Tamper-evident log of threat synchronizations, AI queries, and analyst investigations</p>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="table-responsive">
+              <table class="soc-table" id="audit-logs-table">
+                <thead>
+                  <tr>
+                    <th>Timestamp</th>
+                    <th>Action</th>
+                    <th>Category</th>
+                    <th>User / Agent</th>
+                    <th>Status</th>
+                    <th>Target / Details</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td colspan="6" class="text-muted" style="text-align:center; padding: 24px;">Loading audit logs...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Modal: Import CSV -->
+  <div id="modal-import-csv" class="modal-overlay hidden">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>Import Enterprise Devices via CSV</h3>
+        <button class="modal-close-btn" onclick="closeAssetImportModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <p class="text-muted" style="margin-bottom: 12px; font-size: 13px;">Upload an endpoint inventory file. Required headers: <code>device_id, hostname, ip_address, os_name, criticality</code></p>
+        <div class="file-dropzone" id="csv-dropzone">
+          <input type="file" id="asset-csv-file" accept=".csv" />
+          <p>Drag & drop <code>.csv</code> file here or <strong>browse</strong></p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeAssetImportModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="submitAssetCSV()">Upload & Ingest</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Add Single Device -->
+  <div id="modal-add-device" class="modal-overlay hidden">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>Register Enterprise Endpoint</h3>
+        <button class="modal-close-btn" onclick="closeAddAssetModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Device ID *</label>
+            <input type="text" id="form-dev-id" placeholder="DEV-SRV-CORP-01" />
+          </div>
+          <div class="form-group">
+            <label>Hostname *</label>
+            <input type="text" id="form-hostname" placeholder="srv-app.corp.internal" />
+          </div>
+          <div class="form-group">
+            <label>Internal IP Address</label>
+            <input type="text" id="form-ip" placeholder="10.0.10.25" />
+          </div>
+          <div class="form-group">
+            <label>Operating System</label>
+            <input type="text" id="form-os" placeholder="Ubuntu 22.04 LTS" />
+          </div>
+          <div class="form-group">
+            <label>Department / Owner</label>
+            <input type="text" id="form-dept" placeholder="Core Infrastructure" />
+          </div>
+          <div class="form-group">
+            <label>Criticality Tier</label>
+            <select id="form-criticality">
+              <option value="critical">Critical</option>
+              <option value="high">High</option>
+              <option value="medium" selected>Medium</option>
+              <option value="low">Low</option>
+            </select>
+          </div>
+          <div class="form-group full-width">
+            <label style="display:flex; align-items:center; gap: 8px; cursor:pointer;">
+              <input type="checkbox" id="form-internet-facing" />
+              <span>Asset is directly Internet-Facing (Higher Exposure Risk)</span>
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeAddAssetModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="submitAddDevice()">Save Endpoint</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
